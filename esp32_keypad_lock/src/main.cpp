@@ -1,31 +1,26 @@
 #include <Arduino.h>
-#include <Keypad.h>
 
-const byte ROWS = 4;
-const byte COLS = 4;
-
-char keys[ROWS][COLS] = {
-  {'1','2','3','A'},
-  {'4','5','6','B'},
-  {'7','8','9','C'},
-  {'*','0','#','D'}
-};
-
-byte rowPins[ROWS] = {19, 18, 5, 17};
-byte colPins[COLS] = {16, 4, 2, 15};
-
-Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
+#define RELAY_PIN 23
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Keypad Test");
+  
+  pinMode(RELAY_PIN, OUTPUT);
+
+  // ברירת מחדל - כבוי
+  digitalWrite(RELAY_PIN, HIGH);
+
+  Serial.println("Lock system started");
 }
 
 void loop() {
-  char key = keypad.getKey();
+  Serial.println("Opening lock...");
+  
+  digitalWrite(RELAY_PIN, LOW); // פתיחה (לרוב Relay עובד הפוך)
+  delay(3000); // המנעול פתוח 3 שניות
 
-  if (key) {
-    Serial.print("Pressed: ");
-    Serial.println(key);
-  }
+  Serial.println("Closing lock...");
+  
+  digitalWrite(RELAY_PIN, HIGH); // סגירה
+  delay(3000); // המנעול סגור 3 שניות
 }
